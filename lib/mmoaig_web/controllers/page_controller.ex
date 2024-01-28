@@ -1,9 +1,10 @@
 defmodule MmoaigWeb.PageController do
   use MmoaigWeb, :controller
 
+  alias Mmoaig.Events
+
   def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home)
+    events = Events.list_events()
+    render(conn, :home, events: events)
   end
 end
