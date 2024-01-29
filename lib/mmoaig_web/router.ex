@@ -18,6 +18,8 @@ defmodule MmoaigWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/training-matches/:id", TrainingMatchLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
