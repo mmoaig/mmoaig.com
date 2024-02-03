@@ -7,6 +7,7 @@ defmodule Mmoaig.Matches do
   alias Mmoaig.Repo
 
   alias Mmoaig.Matches.Match
+  alias Mmoaig.Matches.Runner
 
   @doc """
   Returns the list of matches.
@@ -100,5 +101,9 @@ defmodule Mmoaig.Matches do
   """
   def change_match(%Match{} = match, attrs \\ %{}) do
     Match.changeset(match, attrs)
+  end
+
+  def start_runner(match) do
+    DynamicSupervisor.start_child(Mmoaig.Matches.Runner.Supervisor, {Runner, match})
   end
 end
