@@ -43,6 +43,8 @@ defmodule Mmoaig.MatchesTest do
     test "update_match/2 with valid data updates the match" do
       match = match_fixture()
 
+      Matches.subscribe_to_match_updates(match.id)
+
       update_attrs = %{
         status: "in-progress",
         rated: false,
@@ -53,12 +55,16 @@ defmodule Mmoaig.MatchesTest do
       assert match.status == "in-progress"
       assert match.rated == false
       assert match.runner_token == "some updated runner_token"
+
+      assert_received {:match_updated, ^match}
     end
 
     test "update_match/2 with invalid data returns error changeset" do
       match = match_fixture()
+      Matches.subscribe_to_match_updates(match.id)
       assert {:error, %Ecto.Changeset{}} = Matches.update_match(match, @invalid_attrs)
       assert match == Matches.get_match!(match.id)
+      refute_received _match
     end
 
     test "delete_match/1 deletes the match" do

@@ -3,6 +3,7 @@ defmodule MmoaigWeb.TrainingMatchLive.ShowTest do
   import Phoenix.LiveViewTest
 
   alias Mmoaig.MatchesFixtures
+  alias Mmoaig.Matches
 
   test "renders without crashing", %{conn: conn} do
     match = MatchesFixtures.match_fixture()
@@ -13,5 +14,13 @@ defmodule MmoaigWeb.TrainingMatchLive.ShowTest do
 
     {:ok, _view, html} = live(conn)
     assert html =~ "Show!"
+  end
+
+  test "updates the match status when it changes", %{conn: conn} do
+    match = MatchesFixtures.match_fixture()
+    conn = get(conn, "/training-matches/#{match.id}")
+    {:ok, view, _html} = live(conn)
+    Matches.update_match(match, %{status: "in-progress"})
+    assert render(view) =~ "in-progress"
   end
 end
