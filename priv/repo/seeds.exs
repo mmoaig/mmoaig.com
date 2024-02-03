@@ -12,6 +12,8 @@
 
 alias Mmoaig.Repo
 alias Mmoaig.Events.Event
+alias Mmoaig.Events
+alias Mmoaig.TrainingPartners.TrainingPartner
 
 events = [
   %Event{
@@ -31,6 +33,16 @@ events = [
   }
 ]
 
+training_partners = [
+  %{
+    event_slug: "rock-paper-scissors",
+    name: "Rock Man",
+    repository_url: "https://github.com/mmoaig/rock-man",
+    slug: "rock-man",
+    enabled: true
+  }
+]
+
 events
 |> Enum.each(fn event ->
   event
@@ -38,5 +50,28 @@ events
   |> Repo.insert!(
     on_conflict: [set: [name: event.name, enabled: event.enabled]],
     conflict_target: :slug
+  )
+end)
+
+training_partners
+|> Enum.each(fn training_partner ->
+  event = Events.find_event_by_slug!(training_partner.event_slug)
+
+  %TrainingPartner{
+    name: training_partner.name,
+    repository_url: training_partner.repository_url,
+    event_id: event.id,
+    slug: training_partner.slug,
+    enabled: training_partner.enabled
+  }
+  |> Repo.insert!(
+    on_conflict: [
+      set: [
+        name: training_partner.name,
+        repository_url: training_partner.repository_url,
+        enabled: training_partner.enabled
+      ]
+    ],
+    conflict_target: [:slug, :event_id]
   )
 end)

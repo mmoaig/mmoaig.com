@@ -17,9 +17,9 @@
             <div class="group relative flex items-start space-x-3 py-4">
               <div class="min-w-0 flex-1">
                 <div class="text-sm font-medium text-gray-900">
-                  <a :if={event.enabled} href="#">
+                  <.link href={~p"/events/#{event.slug}/training-matches/new"}>
                     <span class="absolute inset-0" aria-hidden="true"></span> <%= event.name %>
-                  </a>
+                  </.link>
                   <span :if={!event.enabled}><%= event.name %></span>
                 </div>
               </div>
