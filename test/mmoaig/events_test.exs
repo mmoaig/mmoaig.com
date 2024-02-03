@@ -10,5 +10,16 @@ defmodule Mmoaig.EventsTest do
       event = event_fixture()
       assert Events.list_events() == [event]
     end
+
+    test "find_event_by_slug!/1 returns the event when found" do
+      event = event_fixture()
+      assert event == Events.find_event_by_slug!(event.slug)
+    end
+
+    test "find_event_by_slug!/1 raises an error when event is not found" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Events.find_event_by_slug!("non-existent-event")
+      end
+    end
   end
 end

@@ -1,0 +1,14 @@
+<.simple_form for={%{}} action="create">
+  <.input
+    type="select"
+    name="training-partner"
+    options={training_partner_options(@training_partners)}
+    value={nil}
+  />
+
+  <.input type="file" name="trainee-file" value={nil} />
+
+  <:actions>
+    <.button>Save</.button>
+  </:actions>
+</.simple_form>
