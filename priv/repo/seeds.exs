@@ -37,7 +37,7 @@ training_partners = [
   %{
     event_slug: "rock-paper-scissors",
     name: "Rock Man",
-    repository_url: "https://github.com/mmoaig/rock-man",
+    repository_url: "https://raw.githubusercontent.com/mmoaig/rock-man/main",
     slug: "rock-man",
     enabled: true
   }
