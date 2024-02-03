@@ -1,4 +1,4 @@
-defmodule MmoaigWeb.PageControllerTest do
+defmodule MmoaigWeb.LandingPageLiveTest do
   use MmoaigWeb.ConnCase
 
   alias Mmoaig.EventsFixtures
