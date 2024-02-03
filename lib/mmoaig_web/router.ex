@@ -17,10 +17,10 @@ defmodule MmoaigWeb.Router do
   scope "/", MmoaigWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
     get "/events/:event_slug/training-matches/new", TrainingMatchController, :new
     post "/events/:event_slug/training-matches/create", TrainingMatchController, :create
 
+    live "/", LandingPageLive, :home
     live "/training-matches/:id", TrainingMatchLive.Show, :show
   end
 
