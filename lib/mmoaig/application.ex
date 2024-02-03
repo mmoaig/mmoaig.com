@@ -16,6 +16,7 @@ defmodule Mmoaig.Application do
       {Finch, name: Mmoaig.Finch},
       # Start a worker by calling: Mmoaig.Worker.start_link(arg)
       # {Mmoaig.Worker, arg},
+      {DynamicSupervisor, name: Mmoaig.Matches.Runner.Supervisor, strategy: :one_for_one},
       # Start to serve requests, typically the last entry
       MmoaigWeb.Endpoint
     ]

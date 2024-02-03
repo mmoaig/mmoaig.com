@@ -23,6 +23,8 @@ defmodule MmoaigWeb.TrainingMatchController do
 
     case Matches.create_match(match_params) do
       {:ok, match} ->
+        Matches.start_runner(match)
+
         conn
         |> put_flash(:info, "Match created successfully.")
         |> redirect(to: ~p"/training-matches/#{match.id}")
