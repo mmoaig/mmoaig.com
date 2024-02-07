@@ -8,7 +8,7 @@ defmodule Mmoaig.EventsFixtures do
       |> Enum.into(%{
         enabled: true,
         name: "some name",
-        slug: "some slug"
+        slug: "some slug #{System.unique_integer()}"
       })
 
     {:ok, event} =

@@ -2,11 +2,15 @@ defmodule Mmoaig.Matches.Match do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Mmoaig.Matches.Participant
+
   schema "matches" do
     field :status, :string
     field :rated, :boolean, default: false
     field :runner_token, :string
     field :event_id, :id
+
+    has_many :participants, Participant
 
     timestamps(type: :utc_datetime)
   end
