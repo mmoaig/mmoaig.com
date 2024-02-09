@@ -18,4 +18,8 @@ defmodule Mmoaig.TrainingPartners do
     |> Registration.fetch_registration_for_training_partner!()
     |> SourceCode.fetch_source_code_for_registration!()
   end
+
+  def change_training_partner(%TrainingPartner{} = training_partner, attrs \\ %{}) do
+    TrainingPartner.changeset(training_partner, attrs)
+  end
 end
