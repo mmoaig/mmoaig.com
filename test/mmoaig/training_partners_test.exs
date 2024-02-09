@@ -74,5 +74,10 @@ defmodule Mmoaig.TrainingPartnersTest do
         TrainingPartners.fetch_training_partner_source_code!(training_partner.id)
       end
     end
+
+    test "change_training_partner/1 returns a training partner changeset" do
+      training_partner = training_partner_fixture()
+      assert %Ecto.Changeset{} = TrainingPartners.change_training_partner(training_partner)
+    end
   end
 end
