@@ -1,15 +1,17 @@
-<h1>Create A Training Match</h1>
+<div class="py-10 px-4 sm:px-6 lg:px-8">
+  <h1>Create A Training Match</h1>
 
-<.simple_form :let={f} as="training_match_params" for={@changeset} action="create" multipart>
-  <.input
-    type="select"
-    field={f[:training_partner_id]}
-    options={training_partner_options(@training_partners)}
-  />
+  <.simple_form :let={f} as="training_match_params" for={@changeset} action="create" multipart>
+    <.input
+      type="select"
+      field={f[:training_partner_id]}
+      options={training_partner_options(@training_partners)}
+    />
 
-  <.input field={f[:trainee_file]} type="file" />
+    <.input field={f[:trainee_file]} type="file" />
 
-  <:actions>
-    <.button>Save</.button>
-  </:actions>
-</.simple_form>
+    <:actions>
+      <.button>Save</.button>
+    </:actions>
+  </.simple_form>
+</div>
