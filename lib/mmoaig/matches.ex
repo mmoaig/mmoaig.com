@@ -7,6 +7,13 @@ defmodule Mmoaig.Matches do
   alias Mmoaig.Matches.Runner
   alias Mmoaig.Matches.Updates
 
+  def list_log_messages(match_id),
+    do:
+      LogMessage
+      |> LogMessage.for_match(match_id)
+      |> LogMessage.with_most_recent_first()
+      |> Repo.all()
+
   def create_log_message("log", message),
     do:
       message

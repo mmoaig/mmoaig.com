@@ -8,7 +8,7 @@ defmodule Mmoaig.Repo.Migrations.CreateMatchLogMessages do
       add :match_id, references(:matches, on_delete: :nothing)
       add :participant_id, references(:match_participants, on_delete: :nothing)
 
-      timestamps(type: :utc_datetime)
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:match_log_messages, [:match_id])
