@@ -3,6 +3,7 @@ defmodule Mmoaig.Matches.Match do
   import Ecto.Changeset
 
   alias Mmoaig.Matches.Participant
+  alias Mmoaig.Matches.LogMessage
 
   schema "matches" do
     field :status, :string
@@ -11,6 +12,7 @@ defmodule Mmoaig.Matches.Match do
     field :event_id, :id
 
     has_many :participants, Participant
+    has_many :log_messages, LogMessage
 
     timestamps(type: :utc_datetime)
   end

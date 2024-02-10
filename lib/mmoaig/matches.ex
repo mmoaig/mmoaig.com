@@ -1,14 +1,41 @@
 defmodule Mmoaig.Matches do
-  @moduledoc """
-  The Matches context.
-  """
-
   import Ecto.Query, warn: false
+  alias Mmoaig.Matches.LogMessage
   alias Mmoaig.Repo
 
   alias Mmoaig.Matches.Match
   alias Mmoaig.Matches.Runner
   alias Mmoaig.Matches.Updates
+
+  def create_log_message("log", message),
+    do:
+      message
+      |> Map.put(:level, "log")
+      |> create_log_message()
+
+  def create_log_message("info", message),
+    do:
+      message
+      |> Map.put(:level, "info")
+      |> create_log_message()
+
+  def create_log_message("warning", message),
+    do:
+      message
+      |> Map.put(:level, "warning")
+      |> create_log_message()
+
+  def create_log_message("error", message),
+    do:
+      message
+      |> Map.put(:level, "error")
+      |> create_log_message()
+
+  defp create_log_message(message),
+    do:
+      %LogMessage{}
+      |> LogMessage.changeset(message)
+      |> Repo.insert()
 
   def list_matches do
     Repo.all(Match)
