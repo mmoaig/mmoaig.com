@@ -3,6 +3,7 @@ defmodule Mmoaig.Matches.Runner do
 
   alias Mmoaig.Matches
 
+  @spec start_link(any()) :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link(match) do
     GenServer.start_link(__MODULE__, match, name: __MODULE__)
   end

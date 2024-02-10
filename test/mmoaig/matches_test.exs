@@ -12,6 +12,15 @@ defmodule Mmoaig.MatchesTest do
 
     @invalid_attrs %{status: "pending", rated: nil, runner_token: nil}
 
+    test "list_log_messages/1 returns all log messages for the match" do
+      match = match_fixture()
+      first_log_message = log_message_fixture(match_id: match.id)
+      second_log_message = log_message_fixture(match_id: match.id)
+      log_message_fixture()
+
+      assert Matches.list_log_messages(match.id) == [second_log_message, first_log_message]
+    end
+
     test "create_log_message/2 with valid data creates a log message" do
       match = match_fixture()
 

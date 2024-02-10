@@ -1,4 +1,5 @@
 defmodule Mmoaig.MatchesFixtures do
+  alias Mmoaig.Matches.LogMessage
   alias Mmoaig.EventsFixtures
   alias Mmoaig.Repo
   alias Mmoaig.Matches.Participant
@@ -49,5 +50,30 @@ defmodule Mmoaig.MatchesFixtures do
       |> Repo.insert()
 
     participant
+  end
+
+  def log_message_fixture(attrs \\ %{}) do
+    match_id =
+      with %{match_id: match_id} <- attrs do
+        match_id
+      else
+        _ ->
+          match = match_fixture()
+          match.id
+      end
+
+    attrs =
+      Enum.into(attrs, %{
+        match_id: match_id,
+        level: "log",
+        message: "some log message"
+      })
+
+    {:ok, log_message} =
+      %LogMessage{}
+      |> LogMessage.changeset(attrs)
+      |> Repo.insert()
+
+    log_message
   end
 end

@@ -9,8 +9,16 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
 
   def handle_params(%{"id" => id}, _uri, socket) do
     if connected?(socket), do: Matches.subscribe_to_match_updates(id)
+
     match = Matches.get_match!(id)
-    {:noreply, assign(socket, :match, match)}
+    log_messages = Matches.list_log_messages(match.id)
+
+    {
+      :noreply,
+      socket
+      |> assign(:match, match)
+      |> assign(:log_messages, log_messages)
+    }
   end
 
   def handle_info({:match_updated, match}, socket) do
