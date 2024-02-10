@@ -5,11 +5,40 @@ defmodule Mmoaig.MatchesTest do
 
   describe "matches" do
     alias Mmoaig.Matches.Match
+    alias Mmoaig.Matches.LogMessage
 
     import Mmoaig.MatchesFixtures
     alias Mmoaig.EventsFixtures
 
     @invalid_attrs %{status: "pending", rated: nil, runner_token: nil}
+
+    test "create_log_message/2 with valid data creates a log message" do
+      match = match_fixture()
+
+      assert {:ok, %LogMessage{level: "log", message: "some log message"}} =
+               Matches.create_log_message("log", %{
+                 match_id: match.id,
+                 message: "some log message"
+               })
+
+      assert {:ok, %LogMessage{level: "info", message: "some info message"}} =
+               Matches.create_log_message("info", %{
+                 match_id: match.id,
+                 message: "some info message"
+               })
+
+      assert {:ok, %LogMessage{level: "warning", message: "some warning message"}} =
+               Matches.create_log_message("warning", %{
+                 match_id: match.id,
+                 message: "some warning message"
+               })
+
+      assert {:ok, %LogMessage{level: "error", message: "some error message"}} =
+               Matches.create_log_message("error", %{
+                 match_id: match.id,
+                 message: "some error message"
+               })
+    end
 
     test "list_matches/0 returns all matches" do
       match = match_fixture()
