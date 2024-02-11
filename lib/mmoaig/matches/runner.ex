@@ -1,4 +1,5 @@
 defmodule Mmoaig.Matches.Runner do
+  @registry Mmoaig.Matches.Runner.Registry
   use GenServer
 
   alias Mmoaig.Matches
@@ -9,6 +10,7 @@ defmodule Mmoaig.Matches.Runner do
 
   def init(match) do
     Process.send_after(self(), :start_match, 1_000)
+    Matches.create_log_message("info", %{match_id: match.id, message: "Match runner started"})
     {:ok, match}
   end
 
@@ -27,7 +29,16 @@ defmodule Mmoaig.Matches.Runner do
   end
 
   def handle_info(:stop, match) do
+    Matches.create_log_message("info", %{
+      match_id: match.id,
+      message: "Match runner stopped"
+    })
+
     DynamicSupervisor.terminate_child(Mmoaig.Matches.Runner.Supervisor, self())
     {:noreply, match}
+  end
+
+  defp via_tuple(match) do
+    {:via, Registry, {Mmoaig.Matches.Runner.Registry, match.runner_token}}
   end
 end
