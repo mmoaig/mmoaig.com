@@ -3,6 +3,8 @@ defmodule Mmoaig.Matches.Runner do
   use GenServer
 
   alias Mmoaig.Matches
+  alias Mmoaig.Matches.Match
+  alias Mmoaig.Matches.Gateway
 
   def start_link(match) do
     GenServer.start_link(__MODULE__, match, name: via_tuple(match))
@@ -16,7 +18,15 @@ defmodule Mmoaig.Matches.Runner do
 
   def handle_info(:start_match, match) do
     {:ok, match} = Matches.update_match(match, %{status: "in-progress"})
+
+    match = Match.load_participants(match)
+
     Matches.create_log_message("info", %{match_id: match.id, message: "Match started"})
+
+    Enum.each(match.participants, fn participant ->
+      Gateway.request_turn(match.id, participant.id)
+    end)
+
     Process.send_after(self(), :complete_match, 10_000)
     {:noreply, match}
   end

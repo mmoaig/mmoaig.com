@@ -3,6 +3,7 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
 
   alias Mmoaig.Matches
   alias Mmoaig.Matches.Match
+  alias Mmoaig.Matches.Gateway
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -22,6 +23,7 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
       Matches.subscribe_to_match_updates(id)
 
       if match.status == "pending" && match_runner_token == match.runner_token do
+        Gateway.start_link(match.id, self())
         Matches.start_match_runner(match)
       end
     end
@@ -41,5 +43,9 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
 
   def handle_info({:log_messages_updated, log_messages}, socket) do
     {:noreply, assign(socket, :log_messages, log_messages)}
+  end
+
+  def handle_cast({:request_turn, participant_id}, socket) do
+    {:noreply, push_event(socket, "take_turn:#{participant_id}", %{})}
   end
 end
