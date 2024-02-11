@@ -4,6 +4,7 @@ defmodule Mmoaig.Matches.Match do
 
   alias Mmoaig.Matches.Participant
   alias Mmoaig.Matches.LogMessage
+  alias Mmoaig.Matches.Round
   alias Mmoaig.Repo
 
   schema "matches" do
@@ -14,6 +15,7 @@ defmodule Mmoaig.Matches.Match do
 
     has_many :participants, Participant
     has_many :log_messages, LogMessage
+    has_many :rounds, Round
 
     timestamps(type: :utc_datetime)
   end
