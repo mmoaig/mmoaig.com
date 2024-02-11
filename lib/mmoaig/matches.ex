@@ -43,6 +43,7 @@ defmodule Mmoaig.Matches do
       %LogMessage{}
       |> LogMessage.changeset(message)
       |> Repo.insert()
+      |> broadcast_log_messages()
 
   def list_matches do
     Repo.all(Match)
@@ -78,9 +79,16 @@ defmodule Mmoaig.Matches do
   def subscribe_to_match_updates(match_id), do: Updates.subscribe(match_id)
 
   defp broadcast_match_update({:ok, match}) do
-    Updates.broadcast(match)
+    Updates.broadcast_match(match)
     {:ok, match}
   end
 
   defp broadcast_match_update(match), do: match
+
+  defp broadcast_log_messages({:ok, log_message}) do
+    Updates.broadcast_log_messages(log_message.match_id)
+    {:ok, log_message}
+  end
+
+  defp broadcast_log_messages(error), do: error
 end
