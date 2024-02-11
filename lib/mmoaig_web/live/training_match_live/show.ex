@@ -16,6 +16,8 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
       |> Matches.get_match!()
       |> Match.load_participants()
 
+    log_messages = Matches.list_log_messages(match.id)
+
     if connected?(socket) do
       Matches.subscribe_to_match_updates(id)
 
@@ -24,13 +26,12 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
       end
     end
 
-    log_messages = Matches.list_log_messages(match.id)
-
     {
       :noreply,
       socket
       |> assign(:match, match)
       |> assign(:log_messages, log_messages)
+      |> assign(:participants, match.participants)
     }
   end
 

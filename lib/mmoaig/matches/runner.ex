@@ -5,7 +5,7 @@ defmodule Mmoaig.Matches.Runner do
   alias Mmoaig.Matches
 
   def start_link(match) do
-    GenServer.start_link(__MODULE__, match, name: __MODULE__)
+    GenServer.start_link(__MODULE__, match, name: via_tuple(match))
   end
 
   def init(match) do
@@ -39,6 +39,6 @@ defmodule Mmoaig.Matches.Runner do
   end
 
   defp via_tuple(match) do
-    {:via, Registry, {Mmoaig.Matches.Runner.Registry, match.runner_token}}
+    {:via, Registry, {@registry, match.runner_token}}
   end
 end

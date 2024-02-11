@@ -1,4 +1,14 @@
 <div>
+  <%= for participant <- @participants do %>
+    <div
+      phx-hook="TrainingMatchParticipant"
+      id={"training-match-participant-#{participant.id}"}
+      data-source-code={participant.source_code}
+      data-participant-id={participant.id}
+    />
+  <% end %>
+</div>
+<div>
   <div class="py-10 px-4 sm:px-6 lg:px-8 grow">
     Show! <%= @match.status %>
   </div>
