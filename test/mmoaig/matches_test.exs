@@ -23,6 +23,7 @@ defmodule Mmoaig.MatchesTest do
 
     test "create_log_message/2 with valid data creates a log message" do
       match = match_fixture()
+      Matches.subscribe_to_match_updates(match.id)
 
       assert {:ok, %LogMessage{level: "log", message: "some log message"}} =
                Matches.create_log_message("log", %{
@@ -30,11 +31,21 @@ defmodule Mmoaig.MatchesTest do
                  message: "some log message"
                })
 
+      assert_received {:log_messages_updated, [log_message]}
+      assert log_message.match_id == match.id
+      assert log_message.level == "log"
+      assert log_message.message == "some log message"
+
       assert {:ok, %LogMessage{level: "info", message: "some info message"}} =
                Matches.create_log_message("info", %{
                  match_id: match.id,
                  message: "some info message"
                })
+
+      assert_received {:log_messages_updated, [info_message, ^log_message]}
+      assert info_message.match_id == match.id
+      assert info_message.level == "info"
+      assert info_message.message == "some info message"
 
       assert {:ok, %LogMessage{level: "warning", message: "some warning message"}} =
                Matches.create_log_message("warning", %{
@@ -42,11 +53,23 @@ defmodule Mmoaig.MatchesTest do
                  message: "some warning message"
                })
 
+      assert_received {:log_messages_updated, [warning_message, ^info_message, ^log_message]}
+      assert warning_message.match_id == match.id
+      assert warning_message.level == "warning"
+      assert warning_message.message == "some warning message"
+
       assert {:ok, %LogMessage{level: "error", message: "some error message"}} =
                Matches.create_log_message("error", %{
                  match_id: match.id,
                  message: "some error message"
                })
+
+      assert_received {:log_messages_updated,
+                       [error_message, ^warning_message, ^info_message, ^log_message]}
+
+      assert error_message.match_id == match.id
+      assert error_message.level == "error"
+      assert error_message.message == "some error message"
     end
 
     test "list_matches/0 returns all matches" do

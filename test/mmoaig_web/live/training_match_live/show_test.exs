@@ -23,4 +23,12 @@ defmodule MmoaigWeb.TrainingMatchLive.ShowTest do
     Matches.update_match(match, %{status: "in-progress"})
     assert render(view) =~ "in-progress"
   end
+
+  test "updates the log messages when they change", %{conn: conn} do
+    match = MatchesFixtures.match_fixture()
+    conn = get(conn, "/training-matches/#{match.id}")
+    {:ok, view, _html} = live(conn)
+    Matches.create_log_message("log", %{match_id: match.id, message: "some log message"})
+    assert render(view) =~ "some log message"
+  end
 end

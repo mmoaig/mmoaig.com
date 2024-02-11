@@ -24,4 +24,8 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
   def handle_info({:match_updated, match}, socket) do
     {:noreply, assign(socket, :match, match)}
   end
+
+  def handle_info({:log_messages_updated, log_messages}, socket) do
+    {:noreply, assign(socket, :log_messages, log_messages)}
+  end
 end
