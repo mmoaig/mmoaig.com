@@ -2,6 +2,7 @@ defmodule MmoaigWeb.TrainingMatchController do
   use MmoaigWeb, :controller
 
   alias Mmoaig.TrainingMatches
+  alias Mmoaig.Matches
   alias Mmoaig.TrainingMatches.TrainingMatch
   alias Mmoaig.TrainingPartners
 
@@ -14,6 +15,7 @@ defmodule MmoaigWeb.TrainingMatchController do
   def create(conn, %{"event_slug" => event_slug, "training_match_params" => training_match_params}) do
     case TrainingMatches.create_training_match(event_slug, training_match_params) do
       {:ok, %{match: match}} ->
+        Matches.start_match_runner(match)
         redirect(conn, to: ~p"/training-matches/#{match.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->

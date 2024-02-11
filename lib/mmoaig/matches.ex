@@ -72,7 +72,7 @@ defmodule Mmoaig.Matches do
     Match.changeset(match, attrs)
   end
 
-  def start_runner(match) do
+  def start_match_runner(match) do
     DynamicSupervisor.start_child(Mmoaig.Matches.Runner.Supervisor, {Runner, match})
   end
 

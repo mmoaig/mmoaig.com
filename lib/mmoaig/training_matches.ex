@@ -51,7 +51,7 @@ defmodule Mmoaig.TrainingMatches do
       LogMessage.changeset(%LogMessage{}, %{
         match_id: match.id,
         message: "Match created",
-        level: "log"
+        level: "info"
       })
     end)
     |> Multi.insert_all(
