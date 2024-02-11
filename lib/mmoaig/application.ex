@@ -17,6 +17,7 @@ defmodule Mmoaig.Application do
       # Start a worker by calling: Mmoaig.Worker.start_link(arg)
       # {Mmoaig.Worker, arg},
       {DynamicSupervisor, name: Mmoaig.Matches.Runner.Supervisor, strategy: :one_for_one},
+      {Registry, [keys: :unique, name: Mmoaig.Matches.Runner.Registry]},
       # Start to serve requests, typically the last entry
       MmoaigWeb.Endpoint
     ]

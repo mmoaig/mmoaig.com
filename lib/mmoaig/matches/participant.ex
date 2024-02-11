@@ -10,7 +10,7 @@ defmodule Mmoaig.Matches.Participant do
     field :participant_number, :integer
 
     belongs_to :match, Match
-    has_many :training_partner_match_participants, TrainingPartnerMatchParticipant
+    has_one :training_partner_match_participant, TrainingPartnerMatchParticipant
 
     timestamps(type: :utc_datetime)
   end
