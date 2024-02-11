@@ -16,7 +16,7 @@ defmodule MmoaigWeb.TrainingMatchController do
     case TrainingMatches.create_training_match(event_slug, training_match_params) do
       {:ok, %{match: match}} ->
         Matches.start_match_runner(match)
-        redirect(conn, to: ~p"/training-matches/#{match.id}")
+        redirect(conn, to: ~p"/training-matches/#{match.id}?runner_token=#{match.runner_token}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         training_partners = TrainingPartners.list_training_partners_for_event(event_slug)
