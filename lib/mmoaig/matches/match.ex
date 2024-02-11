@@ -4,6 +4,7 @@ defmodule Mmoaig.Matches.Match do
 
   alias Mmoaig.Matches.Participant
   alias Mmoaig.Matches.LogMessage
+  alias Mmoaig.Repo
 
   schema "matches" do
     field :status, :string
@@ -16,6 +17,11 @@ defmodule Mmoaig.Matches.Match do
 
     timestamps(type: :utc_datetime)
   end
+
+  def load_participants(match),
+    do:
+      match
+      |> Repo.preload(participants: :training_partner_match_participant)
 
   @doc false
   def changeset(match, attrs) do

@@ -2,6 +2,7 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
   use MmoaigWeb, :live_view
 
   alias Mmoaig.Matches
+  alias Mmoaig.Matches.Match
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -10,7 +11,11 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
   def handle_params(%{"id" => id}, _uri, socket) do
     if connected?(socket), do: Matches.subscribe_to_match_updates(id)
 
-    match = Matches.get_match!(id)
+    match =
+      id
+      |> Matches.get_match!()
+      |> Match.load_participants()
+
     log_messages = Matches.list_log_messages(match.id)
 
     {
