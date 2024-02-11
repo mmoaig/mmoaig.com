@@ -1,5 +1,7 @@
 defmodule Mmoaig.MatchesFixtures do
   alias Mmoaig.Matches.LogMessage
+  alias Mmoaig.Matches.Round
+  alias Mmoaig.Matches.Game
   alias Mmoaig.EventsFixtures
   alias Mmoaig.Repo
   alias Mmoaig.Matches.Participant
@@ -75,5 +77,53 @@ defmodule Mmoaig.MatchesFixtures do
       |> Repo.insert()
 
     log_message
+  end
+
+  def round_fixture(attrs \\ %{}) do
+    match_id =
+      with %{match_id: match_id} <- attrs do
+        match_id
+      else
+        _ ->
+          match = match_fixture()
+          match.id
+      end
+
+    attrs =
+      Enum.into(attrs, %{
+        match_id: match_id,
+        status: "pending"
+      })
+
+    {:ok, round} =
+      %Round{}
+      |> Round.changeset(attrs)
+      |> Repo.insert()
+
+    round
+  end
+
+  def game_fixture(attrs \\ %{}) do
+    round_id =
+      with %{round_id: round_id} <- attrs do
+        round_id
+      else
+        _ ->
+          round = round_fixture()
+          round.id
+      end
+
+    attrs =
+      Enum.into(attrs, %{
+        round_id: round_id,
+        status: "pending"
+      })
+
+    {:ok, game} =
+      %Game{}
+      |> Game.changeset(attrs)
+      |> Repo.insert()
+
+    game
   end
 end
