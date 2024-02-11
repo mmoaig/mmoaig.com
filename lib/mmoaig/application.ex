@@ -18,6 +18,7 @@ defmodule Mmoaig.Application do
       # {Mmoaig.Worker, arg},
       {DynamicSupervisor, name: Mmoaig.Matches.Runner.Supervisor, strategy: :one_for_one},
       {Registry, [keys: :unique, name: Mmoaig.Matches.Runner.Registry]},
+      {Registry, [keys: :unique, name: Mmoaig.Matches.Runner.Gateway.Registry]},
       # Start to serve requests, typically the last entry
       MmoaigWeb.Endpoint
     ]

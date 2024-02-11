@@ -26,7 +26,7 @@ defmodule MmoaigWeb.LoggingComponents do
           />
         </svg>
       </div>
-      <.message_content log_message={@log_message} color="blue" />
+      <.message_content log_message={@log_message} color="text-blue-300" />
     </div>
     """
   end
@@ -48,7 +48,7 @@ defmodule MmoaigWeb.LoggingComponents do
           />
         </svg>
       </div>
-      <.message_content log_message={@log_message} color="yellow" />
+      <.message_content log_message={@log_message} color="text-yellow-300" />
     </div>
     """
   end
@@ -65,14 +65,14 @@ defmodule MmoaigWeb.LoggingComponents do
           />
         </svg>
       </div>
-      <.message_content log_message={@log_message} color="red" />
+      <.message_content log_message={@log_message} color="text-red-300" />
     </div>
     """
   end
 
   defp message_content(assigns) do
     ~H"""
-    <div class={"grow flex justify-between text-sm font-medium ml-3 text-#{@color}-300"}>
+    <div class={"grow flex justify-between text-sm font-medium ml-3 #{@color}"}>
       <p class="pr-20"><%= @log_message.message %></p>
       <time class="whitespace-nowrap"><%= @log_message.inserted_at %></time>
     </div>
