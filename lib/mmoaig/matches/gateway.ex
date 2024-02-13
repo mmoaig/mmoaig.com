@@ -7,16 +7,16 @@ defmodule Mmoaig.Matches.Gateway do
     GenServer.start_link(__MODULE__, {match_id, adapter}, name: via_tuple(match_id))
   end
 
-  def request_turn(match_id, participant_id) do
-    GenServer.cast(via_tuple(match_id), {:request_turn, participant_id})
+  def request_turn(match_id, turn) do
+    GenServer.cast(via_tuple(match_id), {:request_turn, turn})
   end
 
   def init({match_id, adapter}) do
     {:ok, {match_id, adapter}}
   end
 
-  def handle_cast({:request_turn, participant_id}, {match_id, adapter}) do
-    GenServer.cast(adapter, {:request_turn, participant_id})
+  def handle_cast({:request_turn, turn}, {match_id, adapter}) do
+    GenServer.cast(adapter, {:request_turn, turn})
     {:noreply, {match_id, adapter}}
   end
 

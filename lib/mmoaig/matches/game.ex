@@ -1,6 +1,7 @@
 defmodule Mmoaig.Matches.Game do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Mmoaig.Matches.Round
 
@@ -9,6 +10,17 @@ defmodule Mmoaig.Matches.Game do
     belongs_to :round, Round
 
     timestamps(type: :utc_datetime)
+  end
+
+  def for_match(query, match_id) do
+    query
+    |> join(:inner, [g], r in assoc(g, :round))
+    |> where([g, r], r.match_id == ^match_id)
+  end
+
+  def with_most_recent_first(query) do
+    query
+    |> order_by([g], desc: g.inserted_at)
   end
 
   @doc false

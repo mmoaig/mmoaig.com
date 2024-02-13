@@ -1,4 +1,5 @@
 defmodule MmoaigWeb.TrainingMatchLive.Show do
+  alias Mmoaig.Matches.Runner
   use MmoaigWeb, :live_view
 
   alias Mmoaig.Matches
@@ -45,7 +46,12 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
     {:noreply, assign(socket, :log_messages, log_messages)}
   end
 
-  def handle_cast({:request_turn, participant_id}, socket) do
-    {:noreply, push_event(socket, "take_turn:#{participant_id}", %{})}
+  def handle_cast({:request_turn, turn}, socket) do
+    {:noreply, push_event(socket, "take_turn:#{turn.participant_id}", %{id: turn.id})}
+  end
+
+  def handle_event("take_turn", turn, socket) do
+    Runner.record_turn(socket.assigns.match, turn)
+    {:noreply, socket}
   end
 end
