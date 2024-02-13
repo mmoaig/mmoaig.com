@@ -8,9 +8,9 @@ export const TrainingMatchParticipant = {
             return takeTurn(); 
         `);
 
-        this.handleEvent(`take_turn:${participantId}`, () => {
-            const turn = this.runBot();
-            console.log({ turn });
-        })
+        this.handleEvent(`take_turn:${participantId}`, turn => {
+            const data = this.runBot();
+            this.pushEvent('take_turn', { turnId: turn.id, data });
+        });
     }
 };

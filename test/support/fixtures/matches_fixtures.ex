@@ -126,4 +126,33 @@ defmodule Mmoaig.MatchesFixtures do
 
     game
   end
+
+  def turn_fixture(attrs \\ %{}) do
+    game_id =
+      with %{game_id: game_id} <- attrs do
+        game_id
+      else
+        _ ->
+          game_fixture().id
+      end
+
+    participant_id =
+      with %{participant_id: participant_id} <- attrs do
+        participant_id
+      else
+        _ ->
+          match = match_fixture()
+          participant = participant_fixture(match_id: match.id)
+          participant.id
+      end
+
+    {:ok, turn} =
+      Mmoaig.Matches.create_turn(%{
+        game_id: game_id,
+        participant_id: participant_id,
+        status: "pending"
+      })
+
+    turn
+  end
 end

@@ -12,6 +12,47 @@ defmodule Mmoaig.MatchesTest do
 
     @invalid_attrs %{status: "pending", rated: nil, runner_token: nil}
 
+    test "get_current_game/1 returns the current game for the match" do
+      match = match_fixture()
+      round = round_fixture(match_id: match.id)
+      game = game_fixture(round_id: round.id)
+
+      assert Matches.get_current_game(match) == game
+    end
+
+    test "create_turn/1 with valid data creates a turn" do
+      match = match_fixture()
+      round = round_fixture(match_id: match.id)
+      game = game_fixture(round_id: round.id)
+      participant = participant_fixture(match_id: match.id)
+
+      {:ok, turn} =
+        Matches.create_turn(%{
+          game_id: game.id,
+          participant_id: participant.id,
+          status: "pending"
+        })
+
+      assert turn.game_id == game.id
+      assert turn.participant_id == participant.id
+      assert turn.status == "pending"
+    end
+
+    test "create_turn/1 with invalid data returns error changeset" do
+      assert {:error, _changeset} = Matches.create_turn(%{})
+    end
+
+    test "update_turn/2 with valid data updates the turn" do
+      turn = turn_fixture()
+      assert {:ok, turn} = Matches.update_turn(turn, %{status: "in-progress"})
+      assert turn.status == "in-progress"
+    end
+
+    test "update_turn/2 with invalid data returns error changeset" do
+      turn = turn_fixture()
+      assert {:error, _changeset} = Matches.update_turn(turn, %{status: "in-zagreb"})
+    end
+
     test "list_log_messages/1 returns all log messages for the match" do
       match = match_fixture()
       first_log_message = log_message_fixture(match_id: match.id)

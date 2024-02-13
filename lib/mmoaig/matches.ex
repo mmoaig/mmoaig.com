@@ -4,8 +4,33 @@ defmodule Mmoaig.Matches do
   alias Mmoaig.Repo
 
   alias Mmoaig.Matches.Match
+  alias Mmoaig.Matches.Game
+  alias Mmoaig.Matches.Turn
   alias Mmoaig.Matches.Runner
   alias Mmoaig.Matches.Updates
+
+  def get_turn!(id), do: Repo.get!(Turn, id)
+
+  def update_turn(%Turn{} = turn, attrs) do
+    turn
+    |> Turn.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def create_turn(attrs) do
+    %Turn{}
+    |> Turn.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @spec get_current_game(atom() | %{:id => any(), optional(any()) => any()}) :: any()
+  def get_current_game(match) do
+    Game
+    |> Game.for_match(match.id)
+    |> Game.with_most_recent_first()
+    |> Ecto.Query.limit(1)
+    |> Repo.one()
+  end
 
   def list_log_messages(match_id),
     do:
