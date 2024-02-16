@@ -1,4 +1,4 @@
-<div>
+<div class="invisible">
   <%= for participant <- @participants do %>
     <div
       phx-hook="TrainingMatchParticipant"
@@ -8,16 +8,42 @@
     />
   <% end %>
 </div>
-<div>
-  <div class="py-10 px-4 sm:px-6 lg:px-8 grow">
-    Show! <%= @match.status %>
+<div class="h-full flex flex-col w-screen">
+  <div class="grow flex flex-col p-4 sm:px-6 lg:px-8">
+    <div class="grow">
+      Show! <%= @match.status %>
+    </div>
+    <div class="flex justify-center">
+      <table>
+        <tbody>
+          <tr>
+            <td>4</td>
+            <td>7</td>
+            <td>4</td>
+            <td>7</td>
+            <td>4</td>
+            <td>7</td>
+            <td>7</td>
+            <td>7</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>7</td>
+            <td>4</td>
+            <td>7</td>
+            <td>4</td>
+            <td>7</td>
+            <td>7</td>
+            <td>7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="w-screen border-t fixed inset-x-0 bottom-0 h-96">
-    <div class="h-full px-4 flex flex-col divide-y divide-gray-700 overflow-y-auto bg-gray-900">
-      <%= for log_message <- @log_messages do %>
-        <MmoaigWeb.LoggingComponents.log_message log_message={log_message} />
-      <% end %>
-    </div>
+  <div class="h-96 px-4 flex flex-col divide-y divide-gray-700 overflow-y-auto bg-gray-900">
+    <%= for log_message <- @log_messages do %>
+      <MmoaigWeb.LoggingComponents.log_message log_message={log_message} />
+    <% end %>
   </div>
 </div>

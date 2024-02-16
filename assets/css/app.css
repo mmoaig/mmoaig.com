@@ -3,3 +3,8 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+[data-phx-main] {
+    display: flex;
+    height: 100vh;
+}
