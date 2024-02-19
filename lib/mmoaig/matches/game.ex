@@ -4,10 +4,12 @@ defmodule Mmoaig.Matches.Game do
   import Ecto.Query
 
   alias Mmoaig.Matches.Round
+  alias Mmoaig.Matches.Turn
 
   schema "match_games" do
     field :status, :string
     belongs_to :round, Round
+    has_many :turns, Turn
 
     timestamps(type: :utc_datetime)
   end
