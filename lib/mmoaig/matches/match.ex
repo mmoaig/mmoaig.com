@@ -26,6 +26,8 @@ defmodule Mmoaig.Matches.Match do
       match
       |> Repo.preload(participants: :training_partner_match_participant)
 
+  def load_games(match), do: Repo.preload(match, rounds: :games)
+
   def load_event(match), do: Repo.preload(match, :event)
 
   @doc false

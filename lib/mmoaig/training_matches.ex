@@ -53,12 +53,6 @@ defmodule Mmoaig.TrainingMatches do
         status: "pending"
       })
     end)
-    |> Multi.insert(:game, fn %{round: round} ->
-      Mmoaig.Matches.Game.changeset(%Mmoaig.Matches.Game{}, %{
-        round_id: round.id,
-        status: "pending"
-      })
-    end)
     |> Multi.insert(:match_created_message, fn %{match: match} ->
       LogMessage.changeset(%LogMessage{}, %{
         match_id: match.id,
