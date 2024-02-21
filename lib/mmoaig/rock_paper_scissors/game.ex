@@ -2,6 +2,8 @@ defmodule Mmoaig.RockPaperScissors.Game do
   alias Mmoaig.RockPaperScissors.Turn
   alias Mmoaig.Matches.Game
 
+  def complete?(%Game{turns: turns}), do: length(turns) == 50
+
   def winner(%Game{status: "complete"} = game) do
     game
     |> Map.get(:turns)
