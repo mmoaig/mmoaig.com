@@ -17,11 +17,4 @@ defmodule Mmoaig.Events.Event do
     |> validate_required([:name, :enabled, :slug])
     |> unique_constraint(:slug)
   end
-
-  @spec game_logic(Mmoaig.Matches.Event.t()) :: Mmoaig.GameLogic.t()
-  def game_logic(event) do
-    case event.slug do
-      "rock-paper-scissors" -> Mmoaig.RockPaperScissors
-    end
-  end
 end

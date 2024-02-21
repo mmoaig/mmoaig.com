@@ -17,6 +17,7 @@ defmodule MmoaigWeb.TrainingMatchLive.Show do
       id
       |> Matches.get_match!()
       |> Match.load_participants()
+      |> Match.load_event()
 
     log_messages = Matches.list_log_messages(match.id)
 

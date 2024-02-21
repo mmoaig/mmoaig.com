@@ -6,6 +6,11 @@ defmodule Mmoaig.EventsTest do
   describe "events" do
     import Mmoaig.EventsFixtures
 
+    test "game_logic/1 returns the correct game logic module" do
+      event = event_fixture(%{slug: "rock-paper-scissors"})
+      assert Mmoaig.RockPaperScissors == Events.game_logic(event)
+    end
+
     test "list_events/0 returns all events" do
       event = event_fixture()
       assert Events.list_events() == [event]

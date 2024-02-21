@@ -6,13 +6,14 @@ defmodule Mmoaig.Matches.Match do
   alias Mmoaig.Matches.LogMessage
   alias Mmoaig.Matches.Round
   alias Mmoaig.Repo
+  alias Mmoaig.Events.Event
 
   schema "matches" do
     field :status, :string
     field :rated, :boolean, default: false
     field :runner_token, :string
-    field :event_id, :id
 
+    belongs_to :event, Event
     has_many :participants, Participant
     has_many :log_messages, LogMessage
     has_many :rounds, Round
@@ -24,6 +25,8 @@ defmodule Mmoaig.Matches.Match do
     do:
       match
       |> Repo.preload(participants: :training_partner_match_participant)
+
+  def load_event(match), do: Repo.preload(match, :event)
 
   @doc false
   def changeset(match, attrs) do

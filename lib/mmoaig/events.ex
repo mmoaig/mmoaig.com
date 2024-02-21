@@ -11,4 +11,7 @@ defmodule Mmoaig.Events do
   def find_event_by_slug!(slug) do
     Repo.get_by!(Event, slug: slug)
   end
+
+  @spec game_logic(Mmoaig.Matches.Event.t()) :: Mmoaig.GameLogic.t()
+  def game_logic(%{slug: "rock-paper-scissors"}), do: Mmoaig.RockPaperScissors
 end
