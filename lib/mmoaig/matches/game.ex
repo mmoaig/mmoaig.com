@@ -5,6 +5,7 @@ defmodule Mmoaig.Matches.Game do
 
   alias Mmoaig.Matches.Round
   alias Mmoaig.Matches.Turn
+  alias Mmoaig.Repo
 
   schema "match_games" do
     field :status, :string
@@ -19,6 +20,8 @@ defmodule Mmoaig.Matches.Game do
     |> join(:inner, [g], r in assoc(g, :round))
     |> where([g, r], r.match_id == ^match_id)
   end
+
+  def load_turns(query), do: Repo.preload(query, :turns)
 
   def with_most_recent_first(query) do
     query
