@@ -5,9 +5,16 @@ defmodule Mmoaig.Matches do
 
   alias Mmoaig.Matches.Match
   alias Mmoaig.Matches.Game
+  alias Mmoaig.Matches.Round
   alias Mmoaig.Matches.Turn
   alias Mmoaig.Matches.Runner
   alias Mmoaig.Matches.Updates
+
+  def create_round(attrs) do
+    %Round{}
+    |> Round.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def create_game(attrs) do
     %Game{}
