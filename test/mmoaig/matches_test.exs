@@ -20,6 +20,23 @@ defmodule Mmoaig.MatchesTest do
       assert Matches.get_current_game(match) == game
     end
 
+    test "create_round/1 with valid data creates a game" do
+      match = match_fixture()
+
+      {:ok, round} =
+        Matches.create_round(%{
+          match_id: match.id,
+          status: "pending"
+        })
+
+      assert round.match_id == match.id
+      assert round.status == "pending"
+    end
+
+    test "create_round/1 with invalid data returns error changeset" do
+      assert {:error, _changeset} = Matches.create_round(%{})
+    end
+
     test "create_game/1 with valid data creates a game" do
       match = match_fixture()
       round = round_fixture(match_id: match.id)

@@ -47,12 +47,6 @@ defmodule Mmoaig.TrainingMatches do
 
     Multi.new()
     |> Multi.insert(:match, Mmoaig.Matches.change_match(%Match{}, match_params))
-    |> Multi.insert(:round, fn %{match: match} ->
-      Mmoaig.Matches.Round.changeset(%Mmoaig.Matches.Round{}, %{
-        match_id: match.id,
-        status: "pending"
-      })
-    end)
     |> Multi.insert(:match_created_message, fn %{match: match} ->
       LogMessage.changeset(%LogMessage{}, %{
         match_id: match.id,

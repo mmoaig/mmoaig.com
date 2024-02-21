@@ -6,8 +6,9 @@ defmodule Mmoaig.Matches.Runner do
   alias Mmoaig.Matches.Match
   alias Mmoaig.Matches.Gateway
 
-  @time_between_turns 500
-  @games_per_round 10
+  @time_between_turns 50
+  @games_per_round 5
+  @rounds_per_match 5
 
   def record_turn(match, turn) do
     GenServer.cast(via_tuple(match), {:record_turn, turn})
@@ -30,9 +31,9 @@ defmodule Mmoaig.Matches.Runner do
       }
     )
 
-    [current_round] = match.rounds
+    match = Map.put(match, :rounds, [])
 
-    {:ok, {match, nil, current_round}}
+    {:ok, {match, nil, nil}}
   end
 
   def handle_info(:start_match, {match, current_game, current_round}) do
@@ -42,7 +43,7 @@ defmodule Mmoaig.Matches.Runner do
 
     Matches.create_log_message("info", %{match_id: match.id, message: "Match started"})
 
-    GenServer.cast(self(), :run_next_round)
+    GenServer.cast(self(), :run_match)
     {:noreply, {match, current_game, current_round}}
   end
 
@@ -75,9 +76,23 @@ defmodule Mmoaig.Matches.Runner do
     {:noreply, {match, current_game, current_round}}
   end
 
+  def handle_cast(:run_match, {match, current_game, current_round}) do
+    if length(match.rounds) == @rounds_per_match do
+      GenServer.cast(self(), :complete_match)
+      {:noreply, {match, current_game, current_round}}
+    else
+      {:ok, current_round} = Matches.create_round(%{match_id: match.id, status: "pending"})
+      current_round = Map.put(current_round, :games, [])
+      match = Map.update(match, :rounds, [], &[current_round | &1])
+      GenServer.cast(self(), :run_next_round)
+
+      {:noreply, {match, current_game, current_round}}
+    end
+  end
+
   def handle_cast(:run_next_round, {match, current_game, current_round}) do
     if length(current_round.games) == @games_per_round do
-      GenServer.cast(self(), :complete_match)
+      GenServer.cast(self(), :run_match)
 
       {:noreply, {match, current_game, current_round}}
     else
