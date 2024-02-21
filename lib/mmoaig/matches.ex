@@ -9,6 +9,12 @@ defmodule Mmoaig.Matches do
   alias Mmoaig.Matches.Runner
   alias Mmoaig.Matches.Updates
 
+  def create_game(attrs) do
+    %Game{}
+    |> Game.changeset(attrs)
+    |> Repo.insert()
+  end
+
   def get_turn!(id), do: Repo.get!(Turn, id)
 
   def update_turn(%Turn{} = turn, attrs) do

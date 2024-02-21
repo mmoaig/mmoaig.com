@@ -5,9 +5,9 @@ defmodule Mmoaig.Matches.Runner do
   alias Mmoaig.Matches
   alias Mmoaig.Matches.Match
   alias Mmoaig.Matches.Gateway
-  alias Mmoaig.Matches.Game
 
   @time_between_turns 500
+  @games_per_round 10
 
   def record_turn(match, turn) do
     GenServer.cast(via_tuple(match), {:record_turn, turn})
@@ -20,10 +20,7 @@ defmodule Mmoaig.Matches.Runner do
   def init(match) do
     Process.send_after(self(), :start_match, 1_000)
 
-    current_game =
-      match
-      |> Matches.get_current_game()
-      |> Game.load_turns()
+    match = Match.load_games(match)
 
     Matches.create_log_message(
       "info",
@@ -33,32 +30,33 @@ defmodule Mmoaig.Matches.Runner do
       }
     )
 
-    {:ok, {match, current_game}}
+    [current_round] = match.rounds
+
+    {:ok, {match, nil, current_round}}
   end
 
-  def handle_info(:start_match, {match, current_game}) do
+  def handle_info(:start_match, {match, current_game, current_round}) do
     {:ok, match} = Matches.update_match(match, %{status: "in-progress"})
 
     match = Match.load_participants(match)
 
     Matches.create_log_message("info", %{match_id: match.id, message: "Match started"})
 
-    GenServer.cast(self(), :run_next_game)
-    {:noreply, {match, current_game}}
+    GenServer.cast(self(), :run_next_round)
+    {:noreply, {match, current_game, current_round}}
   end
 
-  def handle_info(:stop, {match, current_game}) do
+  def handle_info(:stop, {match, current_game, current_round}) do
     Matches.create_log_message("info", %{
       match_id: match.id,
       message: "Match runner stopped"
     })
 
     DynamicSupervisor.terminate_child(Mmoaig.Matches.Runner.Supervisor, self())
-    {:noreply, {match, current_game}}
+    {:noreply, {match, current_game, current_round}}
   end
 
-
-  def handle_info(:run_next_turn, {match, current_game}) do
+  def handle_info(:run_next_turn, {match, current_game, current_round}) do
     game_logic = Mmoaig.Events.game_logic(match.event)
 
     participant_to_move = game_logic.current_turn(match.participants, current_game)
@@ -74,22 +72,37 @@ defmodule Mmoaig.Matches.Runner do
 
     current_game = Map.update(current_game, :turns, [], &[turn | &1])
 
-    {:noreply, {match, current_game}}
+    {:noreply, {match, current_game, current_round}}
   end
 
-  def handle_cast(:run_next_game, {match, current_game}) do
+  def handle_cast(:run_next_round, {match, current_game, current_round}) do
+    if length(current_round.games) == @games_per_round do
+      GenServer.cast(self(), :complete_match)
+
+      {:noreply, {match, current_game, current_round}}
+    else
+      {:ok, current_game} = Matches.create_game(%{status: "pending", round_id: current_round.id})
+      current_game = Map.put(current_game, :turns, [])
+      current_round = Map.update(current_round, :games, [], &[current_game | &1])
+      GenServer.cast(self(), :run_next_game)
+
+      {:noreply, {match, current_game, current_round}}
+    end
+  end
+
+  def handle_cast(:run_next_game, {match, current_game, current_round}) do
     queue_next_turn(self())
-    {:noreply, {match, current_game}}
+    {:noreply, {match, current_game, current_round}}
   end
 
-  def handle_cast(:complete_match, {match, current_game}) do
+  def handle_cast(:complete_match, {match, current_game, current_round}) do
     {:ok, match} = Matches.update_match(match, %{status: "complete"})
     Matches.create_log_message("info", %{match_id: match.id, message: "Match completed"})
     Process.send_after(self(), :stop, 1_000)
-    {:noreply, {match, current_game}}
+    {:noreply, {match, current_game, current_round}}
   end
 
-  def handle_cast({:record_turn, turn}, {match, current_game}) do
+  def handle_cast({:record_turn, turn}, {match, current_game, current_round}) do
     game_logic = Mmoaig.Events.game_logic(match.event)
 
     {:ok, turn} =
@@ -106,12 +119,12 @@ defmodule Mmoaig.Matches.Runner do
       end)
 
     if game_logic.game_complete?(current_game) do
-      GenServer.cast(self(), :complete_match)
+      GenServer.cast(self(), :run_next_round)
     else
       queue_next_turn(self())
     end
 
-    {:noreply, {match, current_game}}
+    {:noreply, {match, current_game, current_round}}
   end
 
   defp queue_next_turn(runner) do
