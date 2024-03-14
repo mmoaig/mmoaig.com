@@ -36,7 +36,6 @@ defmodule Mmoaig.Matches do
     |> Repo.insert()
   end
 
-  @spec get_current_game(atom() | %{:id => any(), optional(any()) => any()}) :: any()
   def get_current_game(match) do
     Game
     |> Game.for_match(match.id)
